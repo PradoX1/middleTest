@@ -253,7 +253,7 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(panel, "Vui lòng nhập đúng định dạng mật khẩu!");
                 } else {
                     userDatabase.add(new User(newUsername, newEmail, newPassword));
-                    JOptionPane.showMessageDialog(panel, "Tạo tài khoản mới thành công."+"\n"+"Mời bạn đăng nhập lại!");
+                    JOptionPane.showMessageDialog(panel, "Tạo tài khoản mới thành công."+"\n"+"Mời bạn đăng nhập vào tài khoản mới!");
                     showLoginUI();
                 }
             }
