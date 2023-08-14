@@ -17,6 +17,8 @@ public class LoginSystemApp extends JFrame implements ActionListener {
     private JPasswordField passwordField;
     private final JPanel panel;
     private String loggedInUser;
+    private String emailLoggedInUser;
+    private String passWordLoggedInUser;
     private final JButton loginButton;
     private final JButton signupButton;
     private final JButton forgotPasswordButton;
@@ -24,10 +26,11 @@ public class LoginSystemApp extends JFrame implements ActionListener {
     private JButton changeUsernameButton;
     private JButton changeEmailButton;
     private JButton changePasswordButton;
-    private JButton exitButton;
+    private final JButton exitButton;
     private JButton backButton;
     private JButton submitButton;
     private final ArrayList<User> userDatabase;
+
     private boolean isValidEmail(String email) {
         // Sử dụng regex để kiểm tra định dạng email
         String regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
@@ -42,6 +45,8 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                 && password.matches(".*[A-Z].*")
                 && password.matches(".*[.,-_;].*");
     }
+
+    //Xử lí giao diện màn hình bắt đầu
     public LoginSystemApp() {
         setTitle("Login System");
         setSize(500, 500);
@@ -52,7 +57,7 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         loginButton = new JButton("Đăng nhập");
         signupButton = new JButton("Đăng ký");
         forgotPasswordButton = new JButton("Quên mật khẩu!");
-        exitButton = new JButton("Exit!");
+        exitButton = new JButton("Thoát!");
 
 
         loginButton.addActionListener(this);
@@ -75,6 +80,7 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         panel.add(loginButton);
         panel.add(forgotPasswordButton);
         panel.add(signupButton);
+        panel.add(exitButton);
         revalidate();
         repaint();
     }
@@ -86,13 +92,12 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         changeEmailButton = new JButton("Thay đổi email người dùng");
         changePasswordButton = new JButton("Thay đổi mật khẩu ");
         logoutButton = new JButton("Đăng xuất");
-        exitButton = new JButton("Thoát!");
 
         changeUsernameButton.addActionListener(this);
         changeEmailButton.addActionListener(this);
         changePasswordButton.addActionListener(this);
         logoutButton.addActionListener(this);
-        exitButton.addActionListener(this);
+
 
         panel.add(welcomeLabel);
         panel.add(changeUsernameButton);
@@ -104,8 +109,9 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         revalidate();
         repaint();
     }
+
     //Xử lí giao diện đăng nhập
-    private void showLogInUI(){
+    private void showLogInUI() {
         panel.removeAll();
         JLabel usernameLabel = new JLabel("Tên người dùng:");
         JLabel passwordLabel = new JLabel("Mật khẩu:");
@@ -113,12 +119,6 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         passwordField = new JPasswordField();
         JButton loginButtonAction = new JButton("Đăng nhập");
         backButton = new JButton("Trở lại");
-        panel.add(usernameLabel);
-        panel.add(usernameField);
-        panel.add(passwordLabel);
-        panel.add(passwordField);
-        panel.add(loginButtonAction);
-        panel.add(backButton);
         loginButtonAction.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -134,18 +134,28 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                 }
                 if (foundUser != null) {
                     loggedInUser = foundUser.getUserName();
+                    passWordLoggedInUser= foundUser.getPassword();
                     showLoggedInUI();
                 } else {
-                    JOptionPane.showMessageDialog(panel, "Tên người dùng hoặc mật khẩu không hợp lệ."+"\n"+"Vui lòng nhập lại!");
+                    JOptionPane.showMessageDialog(panel, "Tên người dùng hoặc mật khẩu không hợp lệ." + "\n" + "Vui lòng nhập lại!");
                     showAfterLogInFailUI();
                 }
             }
         });
         backButton.addActionListener(e -> showLoginUI());
+
+        panel.add(usernameLabel);
+        panel.add(usernameField);
+        panel.add(passwordLabel);
+        panel.add(passwordField);
+        panel.add(loginButtonAction);
+        panel.add(backButton);
+
         revalidate();
         repaint();
     }
-    private void showAfterLogInFailUI(){
+
+    private void showAfterLogInFailUI() {
         panel.removeAll();
         JButton newButton = new JButton("Đăng nhập lại.");
         newButton.addActionListener(new ActionListener() {
@@ -167,6 +177,7 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         revalidate();
         repaint();
     }
+
     // Xử lí giao diện nút Quên mật khẩu
     private void showForgotPasswordUI() {
         panel.removeAll();
@@ -188,15 +199,13 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                 }
 
                 if (foundUser != null) {
-                  showChangePasswordUI(inputEmail);
+                    showChangePasswordUI(inputEmail);
                 } else {
-                    JOptionPane.showMessageDialog(panel, "Không tìm thấy email!"+"\n"+"Vui lòng nhập lại!");
+                    JOptionPane.showMessageDialog(panel, "Không tìm thấy email!" + "\n" + "Vui lòng nhập lại!");
                 }
             }
         });
-
         backButton.addActionListener(e -> showLoginUI());
-
         panel.add(emailLabel);
         panel.add(emailField);
         panel.add(submitButton);
@@ -205,11 +214,12 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         revalidate();
         repaint();
     }
+
     //Xử lí giao diện đăng ký!!!
-    private void showSignUpUI(){
+    private void showSignUpUI() {
         panel.removeAll();
         JLabel usernameLabel = new JLabel("Tên người dùng mới:");
-         usernameField = new JTextField();
+        usernameField = new JTextField();
         JLabel emailLabel = new JLabel("Email người dùng mới:");
         emailField = new JTextField();
         JLabel passwordLabel = new JLabel("Mật khẩu mới");
@@ -220,13 +230,13 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         signUpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String newUsername = usernameField.getText();
-                String newEmail = emailField.getText();
-                String newPassword = new String(passwordField.getPassword());
+                loggedInUser = usernameField.getText();
+                emailLoggedInUser = emailField.getText();
+                passWordLoggedInUser = new String(passwordField.getPassword());
 
                 boolean usernameExists = false;
                 for (User user : userDatabase) {
-                    if (user.getUserName().equals(newUsername)) {
+                    if (user.getUserName().equals(loggedInUser)){
                         usernameExists = true;
                         break;
                     }
@@ -234,21 +244,21 @@ public class LoginSystemApp extends JFrame implements ActionListener {
 
                 boolean emailExists = false;
                 for (User user : userDatabase) {
-                    if (user.getEmail().equals(newEmail)) {
+                    if (user.getEmail().equals(emailLoggedInUser)) {
                         emailExists = true;
                         break;
                     }
                 }
 
-                boolean validEmailFormat = isValidEmail(newEmail);
-                boolean validPassword = isValidPassword(newPassword);
+                boolean validEmailFormat = isValidEmail(emailLoggedInUser);
+                boolean validPassword = isValidPassword(passWordLoggedInUser);
 
                 if (usernameExists) {
-                    JOptionPane.showMessageDialog(panel, "Tên người dùng đã tồn tại!"+"\n"+"Vui lòng nhập lại!");
+                    JOptionPane.showMessageDialog(panel, "Tên người dùng đã tồn tại!" + "\n" + "Vui lòng nhập lại!");
                 } else if (emailExists) {
-                    JOptionPane.showMessageDialog(panel, "Email người dùng đã tồn tại!"+"\n"+"Vui lòng nhập lại!");
+                    JOptionPane.showMessageDialog(panel, "Email người dùng đã tồn tại!" + "\n" + "Vui lòng nhập lại!");
                 } else if (!validEmailFormat) {
-                    JOptionPane.showMessageDialog(panel, "Vui lòng nhập đúng định dạng email!"+"\n"+"Ví dụ: Dat.98-java21@java-21.techmaster.com");
+                    JOptionPane.showMessageDialog(panel, "Vui lòng nhập đúng định dạng email!" + "\n" + "Ví dụ: Dat.98-java21@java-21.techmaster.com");
                 } else if (!validPassword) {
                     JOptionPane.showMessageDialog(panel, """
                             Vui lòng nhâp mật khẩu hợp lệ.
@@ -256,15 +266,13 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                             Chứa ít nhất một ký tự viết hoa.
                             Chứa ít nhất một ký tự đặc biệt (.,-_;).""");
                 } else {
-                    userDatabase.add(new User(newUsername, newEmail, newPassword));
-                    JOptionPane.showMessageDialog(panel, "Tạo tài khoản mới thành công."+"\n"+"Mời bạn đăng nhập vào tài khoản mới!");
+                    userDatabase.add(new User(loggedInUser, emailLoggedInUser, passWordLoggedInUser));
+                    JOptionPane.showMessageDialog(panel, "Tạo tài khoản mới thành công." + "\n" + "Mời bạn đăng nhập vào tài khoản mới!");
                     showLoginUI();
                 }
             }
         });
-
         backButton.addActionListener(e -> showLoginUI());
-
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(emailLabel);
@@ -277,8 +285,9 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         revalidate();
         repaint();
     }
+
     //Xử lí giao diện đổi Username
-    private void showChangUsernameUI(){
+    private void showChangUsernameUI() {
         panel.removeAll();
         JLabel usernameLabel = new JLabel("Nhập tên người dùng mới của bạn:");
         usernameField = new JTextField();
@@ -296,13 +305,13 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                 }
 
                 if (usernameExists) {
-                    JOptionPane.showMessageDialog(panel, "Tên người dùng đã tồn tại."+"\n"+"Vui lòng nhập lại!");
+                    JOptionPane.showMessageDialog(panel, "Tên người dùng đã tồn tại." + "\n" + "Vui lòng nhập lại!");
                 } else {
                     for (User user : userDatabase) {
                         if (user.getUserName().equals(loggedInUser)) {
                             user.setUserName(usernameField.getText());
                             loggedInUser = usernameField.getText();
-                            JOptionPane.showMessageDialog(panel, "Đổi tên người dùng thành công."+"\n"+"Mời bạn đăng nhập lại!");
+                            JOptionPane.showMessageDialog(panel, "Đổi tên người dùng thành công." + "\n" + "Mời bạn đăng nhập lại!");
                             break;
                         }
                     }
@@ -318,8 +327,9 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         revalidate();
         repaint();
     }
-//    Xử lí giao diện thay đổi email
-    private void showChangeEmailUI(){
+
+    //    Xử lí giao diện thay đổi email
+    private void showChangeEmailUI() {
         panel.removeAll();
         JLabel emailLabel = new JLabel("Nhập tên email mới của bạn:");
         emailField = new JTextField();
@@ -337,14 +347,15 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                 }
 
                 if (emailExists) {
-                    JOptionPane.showMessageDialog(panel, "Email đã tồn tại."+"\n"+"Vui lòng nhập lại!");
+                    JOptionPane.showMessageDialog(panel, "Email đã tồn tại." + "\n" + "Vui lòng nhập lại!");
                 } else if (!isValidEmail(emailField.getText())) {
-                    JOptionPane.showMessageDialog(panel, "Vui lòng nhập email hợp lệ."+"\n"+"Ví dụ: Dat.98-java21@java-21.techmaster.com");
+                    JOptionPane.showMessageDialog(panel, "Vui lòng nhập email hợp lệ." + "\n" + "Ví dụ: Dat.98-java21@java-21.techmaster.com");
                 } else {
                     for (User user : userDatabase) {
                         if (user.getUserName().equals(loggedInUser)) {
                             user.setEmail(emailField.getText());
-                            JOptionPane.showMessageDialog(panel, "Đổi email thành công."+"\n"+"Mời bạn đăng nhập lại!");
+                            emailLoggedInUser= emailField.getText();
+                            JOptionPane.showMessageDialog(panel, "Đổi email thành công." + "\n" + "Mời bạn đăng nhập lại!");
                             break;
                         }
                     }
@@ -360,8 +371,10 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         revalidate();
         repaint();
     }
-    private void showChangePasswordUI(String inputEmail){
+
+    private void showChangePasswordUI(String inputEmail) {
         panel.removeAll();
+        JLabel infoUser = new JLabel("Tên người dùng của bạn là: "+loggedInUser);
         JLabel newPasswordLabel = new JLabel("Nhập  mật khẩu mới của bạn:");
         passwordField = new JPasswordField();
         submitButton = new JButton("Đồng ý");
@@ -380,19 +393,22 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                     for (User user : userDatabase) {
                         if (user.getEmail().equals(inputEmail)) {
                             user.setPassword(String.valueOf(passwordField));
-                            JOptionPane.showMessageDialog(panel, "Thay đổi mật khẩu thành công."+"\n"+"Mời bạn đăng nhập lại!");
+                            passWordLoggedInUser= String.valueOf(passwordField);
+                            JOptionPane.showMessageDialog(panel, "Thay đổi mật khẩu thành công." + "\n" + "Mời bạn đăng nhập lại!");
                             break;
-                        } else if(user.getUserName().equals(loggedInUser)){
+                        } else if (user.getUserName().equals(loggedInUser)) {
                             user.setPassword(String.valueOf(passwordField));
-                            JOptionPane.showMessageDialog(panel, "Thay đổi mật khẩu thành công."+"\n"+"Mời bạn đăng nhập lại!");
+                            passWordLoggedInUser= String.valueOf(passwordField);
+                            JOptionPane.showMessageDialog(panel, "Thay đổi mật khẩu thành công." + "\n" + "Mời bạn đăng nhập lại!");
                             break;
                         }
                     }
-                  showLoginUI();
+                    showLoginUI();
                 }
             }
         });
         backButton.addActionListener(e -> showLoggedInUI());
+        panel.add(infoUser);
         panel.add(newPasswordLabel);
         panel.add(passwordField);
         panel.add(submitButton);
@@ -403,7 +419,7 @@ public class LoginSystemApp extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String inputEmail="";
+        String inputEmail = "";
         if (e.getSource() == loginButton) {
             showLogInUI();
         }
@@ -421,7 +437,7 @@ public class LoginSystemApp extends JFrame implements ActionListener {
             showChangeEmailUI();
         }
         if (e.getSource() == changePasswordButton) {
-           showChangePasswordUI(inputEmail);
+            showChangePasswordUI(inputEmail);
         }
         if (e.getSource() == logoutButton) {
             loggedInUser = null;
