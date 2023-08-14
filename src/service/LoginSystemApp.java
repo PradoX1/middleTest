@@ -248,9 +248,13 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                 } else if (emailExists) {
                     JOptionPane.showMessageDialog(panel, "Email người dùng đã tồn tại!"+"\n"+"Vui lòng nhập lại!");
                 } else if (!validEmailFormat) {
-                    JOptionPane.showMessageDialog(panel, "Vui lòng nhập đúng định dạng email!");
+                    JOptionPane.showMessageDialog(panel, "Vui lòng nhập đúng định dạng email!"+"\n"+"Ví dụ: Dat.98-java21@java-21.techmaster.com");
                 } else if (!validPassword) {
-                    JOptionPane.showMessageDialog(panel, "Vui lòng nhập đúng định dạng mật khẩu!");
+                    JOptionPane.showMessageDialog(panel, """
+                            Vui lòng nhâp mật khẩu hợp lệ.
+                            Độ dài từ 7 đến 15 ký tự.
+                            Chứa ít nhất một ký tự viết hoa.
+                            Chứa ít nhất một ký tự đặc biệt (.,-_;).""");
                 } else {
                     userDatabase.add(new User(newUsername, newEmail, newPassword));
                     JOptionPane.showMessageDialog(panel, "Tạo tài khoản mới thành công."+"\n"+"Mời bạn đăng nhập vào tài khoản mới!");
@@ -335,7 +339,7 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                 if (emailExists) {
                     JOptionPane.showMessageDialog(panel, "Email đã tồn tại."+"\n"+"Vui lòng nhập lại!");
                 } else if (!isValidEmail(emailField.getText())) {
-                    JOptionPane.showMessageDialog(panel, "Vui lòng nhập email hợp lệ.");
+                    JOptionPane.showMessageDialog(panel, "Vui lòng nhập email hợp lệ."+"\n"+"Ví dụ: Dat.98-java21@java-21.techmaster.com");
                 } else {
                     for (User user : userDatabase) {
                         if (user.getUserName().equals(loggedInUser)) {
