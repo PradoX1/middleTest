@@ -1,7 +1,6 @@
 package service;
 
 
-import entities.Button;
 import entities.User;
 
 import javax.swing.*;
@@ -16,13 +15,11 @@ public class LoginSystemApp extends JFrame implements ActionListener {
     private JTextField usernameField;
     private JTextField emailField;
     private JPasswordField passwordField;
-    private JPanel panel;
-    private JLabel welcomeLabel;
+    private final JPanel panel;
     private String loggedInUser;
-    private JButton loginButton;
-    private JButton loginButtonAction;
-    private JButton signupButton;
-    private JButton forgotPasswordButton;
+    private final JButton loginButton;
+    private final JButton signupButton;
+    private final JButton forgotPasswordButton;
     private JButton logoutButton;
     private JButton changeUsernameButton;
     private JButton changeEmailButton;
@@ -47,22 +44,27 @@ public class LoginSystemApp extends JFrame implements ActionListener {
     }
     public LoginSystemApp() {
         setTitle("Login System");
-        setSize(300, 200);
+        setSize(500, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2));
+        panel.setLayout(new GridLayout(5, 2));
+        JLabel hello = new JLabel("Chào mừng bạn đến với ứng dụng của chúng tôi!!!");
         loginButton = new JButton("Đăng nhập");
         signupButton = new JButton("Đăng ký");
         forgotPasswordButton = new JButton("Quên mật khẩu!");
+        exitButton = new JButton("Exit!");
 
 
         loginButton.addActionListener(this);
         forgotPasswordButton.addActionListener(this);
         signupButton.addActionListener(this);
+        exitButton.addActionListener(this);
 
+        panel.add(hello);
         panel.add(loginButton);
         panel.add(signupButton);
         panel.add(forgotPasswordButton);
+        panel.add(exitButton);
         add(panel);
         setVisible(true);
         userDatabase = new ArrayList<>();
@@ -79,7 +81,7 @@ public class LoginSystemApp extends JFrame implements ActionListener {
 
     private void showLoggedInUI() {
         panel.removeAll();
-        welcomeLabel = new JLabel("Xin chào " + loggedInUser);
+        JLabel welcomeLabel = new JLabel("Xin chào " + loggedInUser);
         changeUsernameButton = new JButton("Thay đổi tên người dùng");
         changeEmailButton = new JButton("Thay đổi email người dùng");
         changePasswordButton = new JButton("Thay đổi mật khẩu ");
@@ -109,7 +111,7 @@ public class LoginSystemApp extends JFrame implements ActionListener {
         JLabel passwordLabel = new JLabel("Mật khẩu:");
         usernameField = new JTextField();
         passwordField = new JPasswordField();
-        loginButtonAction = new JButton("Đăng nhập");
+        JButton loginButtonAction = new JButton("Đăng nhập");
         backButton = new JButton("Trở lại");
         panel.add(usernameLabel);
         panel.add(usernameField);
@@ -135,10 +137,33 @@ public class LoginSystemApp extends JFrame implements ActionListener {
                     showLoggedInUI();
                 } else {
                     JOptionPane.showMessageDialog(panel, "Tên người dùng hoặc mật khẩu không hợp lệ."+"\n"+"Vui lòng nhập lại!");
+                    showAfterLogInFailUI();
                 }
             }
         });
         backButton.addActionListener(e -> showLoginUI());
+        revalidate();
+        repaint();
+    }
+    private void showAfterLogInFailUI(){
+        panel.removeAll();
+        JButton newButton = new JButton("Đăng nhập lại.");
+        newButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showLogInUI();
+            }
+        });
+        forgotPasswordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showForgotPasswordUI();
+            }
+        });
+        backButton.addActionListener(e -> showLoginUI());
+        panel.add(newButton);
+        panel.add(forgotPasswordButton);
+        panel.add(backButton);
         revalidate();
         repaint();
     }
@@ -342,9 +367,11 @@ public class LoginSystemApp extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 boolean validPassword = isValidPassword(String.valueOf(passwordField.getPassword()));
                 if (!validPassword) {
-                    JOptionPane.showMessageDialog(panel, "Vui lòng nhâp mật khẩu hợp lệ."+"\n"+"Độ dài từ 7 đến 15 ký tự.\n" +
-                            "Chứa ít nhất một ký tự viết hoa.\n" +
-                            "Chứa ít nhất một ký tự đặc biệt (.,-_;).");
+                    JOptionPane.showMessageDialog(panel, """
+                            Vui lòng nhâp mật khẩu hợp lệ.
+                            Độ dài từ 7 đến 15 ký tự.
+                            Chứa ít nhất một ký tự viết hoa.
+                            Chứa ít nhất một ký tự đặc biệt (.,-_;).""");
                 } else {
                     for (User user : userDatabase) {
                         if (user.getEmail().equals(inputEmail)) {
